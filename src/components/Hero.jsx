@@ -1,8 +1,15 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
-import ThreeScene from "./ThreeScene";
+import { useIsMobile } from "../hooks/useIsMobile";
+import DoorIllustration from "./DoorIllustration";
+
+// Code-split the three.js/@react-three/fiber bundle out of the main chunk - it's
+// ~880KB even fully trimmed (three.js's renderer/shader core isn't tree-shakeable
+// below that), so mobile skips it entirely via DoorIllustration below instead.
+const ThreeScene = lazy(() => import("./ThreeScene"));
 
 const Hero = () => {
+  const isMobile = useIsMobile();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -139,7 +146,13 @@ const Hero = () => {
             <div className="absolute inset-0 bg-gradient-to-tr from-[#00B4D8]/10 to-transparent rounded-full blur-[100px] pointer-events-none" />
             
             <div className="w-full h-full relative z-10 cursor-grab active:cursor-grabbing">
-              <ThreeScene />
+              {isMobile ? (
+                <DoorIllustration />
+              ) : (
+                <Suspense fallback={<div className="w-full h-full rounded-3xl bg-white/5 animate-pulse" />}>
+                  <ThreeScene />
+                </Suspense>
+              )}
             </div>
           </motion.div>
 
