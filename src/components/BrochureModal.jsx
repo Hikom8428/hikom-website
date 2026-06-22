@@ -167,7 +167,7 @@ const BrochureModal = ({ item, onClose }) => {
                   download
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#00B4D8] text-white px-6 py-3 rounded-xl font-bold uppercase tracking-wide text-sm hover:bg-[#0096b4] transition-colors"
+                  className="inline-flex items-center gap-2 bg-[#00B4D8] text-[#0F2942] px-6 py-3 rounded-xl font-bold uppercase tracking-wide text-sm hover:opacity-90 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />

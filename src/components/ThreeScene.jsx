@@ -18,24 +18,6 @@ const FloatBob = ({ children, speed = 1.5, intensity = 0.15 }) => {
   return <group ref={ref}>{children}</group>;
 };
 
-const ResponsiveCamera = React.memo(() => {
-  const { camera, size } = useThree();
-
-  useEffect(() => {
-    if (size.width < 768) {
-      camera.fov = 55;
-      camera.position.z = 9;
-    } else {
-      camera.fov = 45;
-      camera.position.z = 7;
-    }
-    camera.updateProjectionMatrix();
-  }, [size, camera]);
-
-  return null;
-});
-ResponsiveCamera.displayName = "ResponsiveCamera";
-
 const ModularOTDoor = React.memo(() => {
   const materials = useMemo(
     () => ({
@@ -112,10 +94,10 @@ const ModularOTDoor = React.memo(() => {
         <boxGeometry args={[1.25, 1.25, 0.02]} />
       </mesh>
 
-      {/* Premium D-Handle (Right Side) */}
+      {/* Premium D-Handle (Right Side) - box instead of a 32-segment cylinder, far fewer vertices to transform/rasterize each frame for a detail this small */}
       <group position={[0.9, 0, 0.15]}>
         <mesh position={[0, 0, 0.1]} material={materials.handle}>
-          <cylinderGeometry args={[0.035, 0.035, 1.2, 32]} />
+          <boxGeometry args={[0.07, 1.2, 0.07]} />
         </mesh>
         <mesh position={[0, 0.55, 0.05]} material={materials.handle}>
           <boxGeometry args={[0.035, 0.035, 0.1]} />
@@ -148,6 +130,11 @@ const FrameLimiter = ({ fps = 30 }) => {
   return null;
 };
 
+// ThreeScene only ever mounts at >=1024px (Hero.jsx gates it), but a narrow
+// laptop/tablet window in that range can still have a weak GPU - antialiasing is
+// one of the more expensive parts of the render pass, so skip it below desktop width.
+const isNarrowViewport = () => typeof window !== "undefined" && window.innerWidth < 1280;
+
 const ThreeScene = () => {
   return (
     <div className="w-full h-full min-h-[500px] lg:min-h-[700px] cursor-grab active:cursor-grabbing">
@@ -156,22 +143,22 @@ const ThreeScene = () => {
         frameloop="demand"
         camera={{ position: [0, 0, 7], fov: 45 }}
         gl={{
-          antialias: true,
+          antialias: !isNarrowViewport(),
           toneMapping: ACESFilmicToneMapping,
           toneMappingExposure: 1.2,
           powerPreference: "high-performance",
         }}
       >
         <FrameLimiter fps={30} />
-        <ResponsiveCamera />
 
         {/* Ambient & Directional Lighting */}
         <ambientLight intensity={0.5} color="#ffffff" />
         <directionalLight position={[5, 10, 7]} intensity={1.5} color="#ffffff" />
 
-        {/* Premium Cyan & Navy Accent Lights */}
+        {/* Single cyan accent light - the second (navy) spotlight was removed: one
+            fewer per-pixel lighting pass, and its contribution was barely visible
+            against the already-navy page background. */}
         <spotLight position={[-8, 5, 8]} angle={0.5} penumbra={1} intensity={40} color="#00B4D8" distance={25} />
-        <spotLight position={[8, -5, 8]} angle={0.5} penumbra={1} intensity={25} color="#0F2942" distance={25} />
 
         {/* Smooth Floating Animation Wrapper */}
         <AutoRotate speed={0.25}>

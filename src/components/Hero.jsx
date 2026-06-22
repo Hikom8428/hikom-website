@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useIsMobile } from "../hooks/useIsMobile";
 import DoorIllustration from "./DoorIllustration";
@@ -8,8 +8,30 @@ import DoorIllustration from "./DoorIllustration";
 // below that), so mobile skips it entirely via DoorIllustration below instead.
 const ThreeScene = lazy(() => import("./ThreeScene"));
 
-const Hero = () => {
+const Hero = React.memo(() => {
   const isMobile = useIsMobile();
+  const textRef = useRef(null);
+  const [textVisible, setTextVisible] = useState(false);
+
+  // Don't even start the ThreeScene import() until the hero text has actually
+  // entered the viewport - decouples the ~880KB three.js fetch from the initial
+  // render commit so the text paints first, regardless of network/CPU speed.
+  useEffect(() => {
+    if (isMobile) return;
+    const el = textRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTextVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isMobile]);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -35,33 +57,10 @@ const Hero = () => {
       {/* Animated Ambient Background Glow Effects */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0F2942] via-[#0b1e30] to-[#050f1a] opacity-90" />
-        
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#00B4D8] blur-[150px]"
-        />
-        
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.05, 0.15, 0.05],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#00B4D8] blur-[180px]"
-        />
+
+        <div className="animate-glow-pulse-a absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#00B4D8] blur-[150px]" />
+
+        <div className="animate-glow-pulse-b absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-[#00B4D8] blur-[180px]" />
 
         <div 
           className="absolute inset-0 opacity-20"
@@ -77,6 +76,7 @@ const Hero = () => {
           
           {/* Left Column: Content */}
           <motion.div
+            ref={textRef}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -122,7 +122,7 @@ const Hero = () => {
             >
               <a
                 href="#products"
-                className="w-full sm:w-auto bg-[#00B4D8] text-white px-8 py-4 rounded-md font-bold uppercase tracking-wider text-sm hover:bg-[#0096b4] hover:-translate-y-1 transition-all duration-300 shadow-[0_0_20px_rgba(0,180,216,0.3)] text-center"
+                className="w-full sm:w-auto bg-[#00B4D8] text-[#0F2942] px-8 py-4 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_0_20px_rgba(0,180,216,0.3)] text-center"
               >
                 Explore Our Products
               </a>
@@ -148,10 +148,12 @@ const Hero = () => {
             <div className="w-full h-full relative z-10 cursor-grab active:cursor-grabbing">
               {isMobile ? (
                 <DoorIllustration />
-              ) : (
+              ) : textVisible ? (
                 <Suspense fallback={<div className="w-full h-full rounded-3xl bg-white/5 animate-pulse" />}>
                   <ThreeScene />
                 </Suspense>
+              ) : (
+                <div className="w-full h-full rounded-3xl bg-white/5 animate-pulse" />
               )}
             </div>
           </motion.div>
@@ -160,6 +162,7 @@ const Hero = () => {
       </div>
     </section>
   );
-};
+});
+Hero.displayName = "Hero";
 
 export default Hero;

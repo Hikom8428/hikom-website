@@ -1,8 +1,9 @@
 // src/sections/Industries.jsx
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const Industries = () => {
+const Industries = React.memo(() => {
+  const [brokenImages, setBrokenImages] = useState({});
   const industries = [
     {
       title: "Hospitals & Healthcare",
@@ -22,7 +23,9 @@ const Industries = () => {
     {
       title: "Research Laboratories",
       description: "Advanced containment solutions designed for maximum safety, hygiene, and efficiency in high-tech scientific facilities.",
-      image: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&q=80&w=800",
+      // Original photo-1581093458791-9f3c3900df4b returned 404 - reusing the
+      // Biotechnology photo (already verified working) until a unique one is added.
+      image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=800",
     },
     {
       title: "Food Processing",
@@ -58,11 +61,7 @@ const Industries = () => {
       {/* Background Gradient & Ambient Lighting */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0F2942] via-[#0b1e30] to-[#050f1a]" />
-        <motion.div
-          animate={{ opacity: [0.05, 0.1, 0.05] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-[-10%] w-[500px] h-[500px] bg-[#00B4D8] rounded-full blur-[150px]"
-        />
+        <div className="animate-opacity-pulse absolute top-0 left-[-10%] w-[500px] h-[500px] bg-[#00B4D8] rounded-full blur-[150px]" />
         <div 
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -125,12 +124,17 @@ const Industries = () => {
               className="group relative h-[350px] lg:h-[400px] rounded-2xl overflow-hidden cursor-pointer"
             >
               {/* Premium Background Image */}
-              <div className="absolute inset-0 w-full h-full">
-                <img
-                  src={industry.image}
-                  alt={industry.title}
-                  className="w-full h-full object-cover transform transition-transform duration-1000 ease-out group-hover:scale-110"
-                />
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#13304d] to-[#0a1c2e]">
+                {!brokenImages[index] && (
+                  <img
+                    src={industry.image}
+                    alt={industry.title}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() => setBrokenImages((b) => ({ ...b, [index]: true }))}
+                    className="w-full h-full object-cover transform transition-transform duration-1000 ease-out group-hover:scale-110"
+                  />
+                )}
               </div>
 
               {/* Glassmorphism Dark Gradient Overlay */}
@@ -163,6 +167,7 @@ const Industries = () => {
       </div>
     </section>
   );
-};
+});
+Industries.displayName = "Industries";
 
 export default Industries;

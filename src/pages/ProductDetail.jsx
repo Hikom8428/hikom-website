@@ -11,6 +11,16 @@ import BrochureModal from "../components/BrochureModal";
 const DEFAULT_DESCRIPTION =
   "Engineered to the highest standards of precision, hygiene, and durability, this solution is built for hospitals, pharmaceutical manufacturers, and critical-care facilities that demand uncompromising contamination control.";
 
+// Photos that were over 250KB as uploaded got compressed to .webp (resized to
+// max 1200px wide, quality 75) - this maps which specific photo indices have a
+// .webp file so the path generator below points at it instead of the original .jpg.
+const WEBP_PHOTO_OVERRIDES = new Set([
+  "doors/ot-doors-sliding/1",
+  "doors/clean-room/1",
+  "doors/clean-room/2",
+  "doors/clean-room/3",
+]);
+
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -42,7 +52,11 @@ const ProductDetail = () => {
   const file = `/brochures/${categorySlug}/${itemSlug}.pdf`;
   const description = productDescriptions[`${categorySlug}/${itemSlug}`] || DEFAULT_DESCRIPTION;
   // TODO: drop real photos/video at public/products/<category>/<item>/...
-  const photos = Array.from({ length: 4 }, (_, i) => `/products/${categorySlug}/${itemSlug}/photo-${i + 1}.jpg`);
+  const photos = Array.from({ length: 4 }, (_, i) => {
+    const idx = i + 1;
+    const ext = WEBP_PHOTO_OVERRIDES.has(`${categorySlug}/${itemSlug}/${idx}`) ? "webp" : "jpg";
+    return `/products/${categorySlug}/${itemSlug}/photo-${idx}.${ext}`;
+  });
   const captions = productPhotoCaptions[`${categorySlug}/${itemSlug}`] || ["Photo 1", "Photo 2", "Photo 3", "Photo 4"];
   const photoDescriptions = productPhotoDescriptions[`${categorySlug}/${itemSlug}`] || captions;
   const video = `/products/${categorySlug}/${itemSlug}/video.mp4`;
@@ -97,7 +111,7 @@ const ProductDetail = () => {
           >
             <button
               onClick={() => setSelectedItem({ name: itemName, category: category.title, file })}
-              className="bg-[#00B4D8] text-white px-8 py-4 rounded-md font-bold uppercase tracking-wider text-sm hover:bg-[#0096b4] hover:-translate-y-1 transition-all duration-300 shadow-[0_0_20px_rgba(0,180,216,0.3)]"
+              className="bg-[#00B4D8] text-[#0F2942] px-8 py-4 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 transition-all duration-300 shadow-[0_0_20px_rgba(0,180,216,0.3)]"
             >
               Download Brochure (PDF / PPT)
             </button>
@@ -144,6 +158,10 @@ const ProductDetail = () => {
                       <img
                         src={src}
                         alt={captions[idx]}
+                        loading="lazy"
+                        decoding="async"
+                        width="800"
+                        height="800"
                         onError={() => setBrokenPhotos((b) => ({ ...b, [idx]: true }))}
                         className="w-full h-full object-cover"
                       />
@@ -221,6 +239,8 @@ const ProductDetail = () => {
               <img
                 src={photos[lightboxIndex]}
                 alt={captions[lightboxIndex]}
+                loading="lazy"
+                decoding="async"
                 className="w-full max-h-[80vh] object-contain rounded-lg"
               />
               <p className="text-gray-300 text-sm text-center mt-4">{captions[lightboxIndex]}</p>

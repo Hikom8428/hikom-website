@@ -1,8 +1,9 @@
 // src/sections/Projects.jsx
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const Projects = () => {
+const Projects = React.memo(() => {
+  const [brokenImages, setBrokenImages] = useState({});
   const projects = [
     {
       title: "Apollo Hospital OT Project",
@@ -109,12 +110,17 @@ const Projects = () => {
               className="group relative h-[400px] sm:h-[450px] lg:h-[500px] rounded-3xl overflow-hidden cursor-pointer"
             >
               {/* Background Image with Hover Zoom */}
-              <div className="absolute inset-0 w-full h-full">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
-                />
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#13304d] to-[#0a1c2e]">
+                {!brokenImages[index] && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() => setBrokenImages((b) => ({ ...b, [index]: true }))}
+                    className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
+                  />
+                )}
               </div>
 
               {/* Glassmorphism / Gradient Overlay */}
@@ -186,6 +192,7 @@ const Projects = () => {
       </div>
     </section>
   );
-};
+});
+Projects.displayName = "Projects";
 
 export default Projects;

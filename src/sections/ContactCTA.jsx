@@ -37,31 +37,8 @@ const ContactCTA = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#050f1a] via-[#0F2942] to-[#0a1c2e]" />
         
         {/* Animated glowing orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.1, 0.15, 0.1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-[#00B4D8] rounded-full blur-[150px] mix-blend-screen"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.05, 0.1, 0.05],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-          className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-[#00B4D8] rounded-full blur-[180px] mix-blend-screen"
-        />
+        <div className="animate-glow-pulse-c absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-[#00B4D8] rounded-full blur-[150px] mix-blend-screen" />
+        <div className="animate-glow-pulse-d absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-[#00B4D8] rounded-full blur-[180px] mix-blend-screen" />
 
         {/* Technical dot grid */}
         <div 

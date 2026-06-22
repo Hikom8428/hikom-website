@@ -99,15 +99,7 @@ const Clients = () => {
         <div className="absolute top-0 right-0 w-24 md:w-48 h-full bg-gradient-to-l from-[#0F2942] to-transparent z-20 pointer-events-none" />
 
         {/* Sliding Track */}
-        <motion.div
-          className="flex w-max"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{
-            repeat: Infinity,
-            ease: "linear",
-            duration: 25, // Adjust speed here
-          }}
-        >
+        <div className="animate-marquee flex w-max">
           {duplicatedClients.map((client, index) => (
             <div
               key={index}
@@ -119,14 +111,14 @@ const Clients = () => {
                 
                 <div className="flex flex-col items-center gap-2 relative z-10">
                   {client.logo}
-                  <span className="text-gray-500 text-sm font-semibold tracking-wide group-hover:text-white transition-colors duration-300">
+                  <span className="text-gray-400 text-sm font-semibold tracking-wide group-hover:text-white transition-colors duration-300">
                     {client.name}
                   </span>
                 </div>
               </div>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

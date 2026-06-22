@@ -1,19 +1,16 @@
-import { motion } from "framer-motion";
-
 // Lightweight static stand-in for ThreeScene on mobile - a flat SVG echoing the
 // same door design (frame, vision window, kickplate, LED accent, handle) at a
 // fraction of the cost, so mobile never has to load the three.js bundle.
+// Plain CSS animation instead of Framer Motion - this renders on every mobile
+// page load, so it shouldn't need any per-frame JS for a purely decorative bob.
 const DoorIllustration = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: [0, -8, 0] }}
-    transition={{
-      opacity: { duration: 0.8 },
-      y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-    }}
-    className="w-full h-full flex items-center justify-center"
-  >
-    <svg viewBox="0 0 200 320" className="h-full max-h-full w-auto drop-shadow-2xl" aria-label="Modular OT door">
+  <div className="animate-float-bob w-full h-full flex items-center justify-center">
+    <svg
+      viewBox="0 0 200 320"
+      className="h-full max-h-full w-auto drop-shadow-2xl"
+      role="img"
+      aria-label="Modular OT door"
+    >
       {/* Outer Frame */}
       <rect x="10" y="10" width="180" height="300" rx="6" fill="#2d3748" />
       {/* Main Panel */}
@@ -29,7 +26,7 @@ const DoorIllustration = () => (
       {/* Handle */}
       <rect x="156" y="130" width="6" height="60" rx="3" fill="#ffffff" />
     </svg>
-  </motion.div>
+  </div>
 );
 
 export default DoorIllustration;

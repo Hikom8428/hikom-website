@@ -6,3 +6,80 @@ html {
 section {
   scroll-margin-top: 100px;
 }
+
+/* Decorative ambient-glow loops, moved off Framer Motion's per-frame JS updates
+   onto the compositor thread via plain CSS animations - same look, no ongoing
+   JS execution cost for purely cosmetic background effects. */
+@keyframes glow-pulse-a {
+  0%, 100% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.2); opacity: 0.2; }
+}
+@keyframes glow-pulse-b {
+  0%, 100% { transform: scale(1); opacity: 0.05; }
+  50% { transform: scale(1.1); opacity: 0.15; }
+}
+@keyframes glow-pulse-c {
+  0%, 100% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.1); opacity: 0.15; }
+}
+@keyframes glow-pulse-d {
+  0%, 100% { transform: scale(1); opacity: 0.05; }
+  50% { transform: scale(1.2); opacity: 0.1; }
+}
+@keyframes opacity-pulse {
+  0%, 100% { opacity: 0.05; }
+  50% { opacity: 0.1; }
+}
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes ping-ring-a {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.4); opacity: 0.2; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes ping-ring-b {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 0.4; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.animate-glow-pulse-a {
+  animation: glow-pulse-a 10s ease-in-out infinite;
+}
+.animate-glow-pulse-b {
+  animation: glow-pulse-b 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.animate-glow-pulse-c {
+  animation: glow-pulse-c 8s ease-in-out infinite;
+}
+.animate-glow-pulse-d {
+  animation: glow-pulse-d 10s ease-in-out infinite;
+  animation-delay: 1s;
+}
+.animate-opacity-pulse {
+  animation: opacity-pulse 5s ease-in-out infinite;
+}
+.animate-float-bob {
+  animation: fade-in 0.8s ease forwards, float-bob 4s ease-in-out infinite;
+}
+.animate-marquee {
+  animation: marquee-scroll 25s linear infinite;
+}
+.animate-ping-ring-a {
+  animation: ping-ring-a 2s ease-out infinite;
+}
+.animate-ping-ring-b {
+  animation: ping-ring-b 2s ease-out infinite;
+  animation-delay: 0.5s;
+}

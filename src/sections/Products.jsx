@@ -1,8 +1,9 @@
 // src/sections/Products.jsx
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const Products = () => {
+const Products = React.memo(() => {
+  const [brokenImages, setBrokenImages] = useState({});
   const products = [
     {
       title: "Fire Rated Door",
@@ -120,13 +121,18 @@ const Products = () => {
               className="group relative bg-[#13304d] border border-white/5 hover:border-[#00B4D8]/30 rounded-2xl transition-all duration-500 overflow-hidden shadow-lg hover:shadow-[0_15px_40px_rgba(0,180,216,0.15)] flex flex-col h-full"
             >
               {/* Premium Image Header with Hover Zoom */}
-              <div className="relative w-full h-48 overflow-hidden">
+              <div className="relative w-full h-48 overflow-hidden bg-gradient-to-br from-[#13304d] to-[#0a1c2e]">
                 <div className="absolute inset-0 bg-[#0F2942]/20 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none" />
-                <img 
-                  src={product.image} 
-                  alt={product.title} 
-                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                />
+                {!brokenImages[index] && (
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    loading="lazy"
+                    decoding="async"
+                    onError={() => setBrokenImages((b) => ({ ...b, [index]: true }))}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                  />
+                )}
                 {/* Bottom gradient fade into card */}
                 <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-[#13304d] to-transparent z-10" />
               </div>
@@ -164,6 +170,7 @@ const Products = () => {
       </div>
     </section>
   );
-};
+});
+Products.displayName = "Products";
 
 export default Products;

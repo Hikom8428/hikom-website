@@ -83,6 +83,10 @@ const Media = () => {
                   <img
                     src={src}
                     alt={`Gallery ${idx + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    width="800"
+                    height="800"
                     onError={() => setBrokenPhotos((b) => ({ ...b, [idx]: true }))}
                     className="w-full h-full object-cover"
                   />

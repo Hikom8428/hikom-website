@@ -173,7 +173,7 @@ const WhyChoose = () => {
               <div className="relative z-10 p-8 h-full flex flex-col">
                 <div className="flex items-start justify-between mb-8">
                   {/* Icon */}
-                  <div className="w-14 h-14 rounded-xl bg-[#0F2942] border border-white/10 flex items-center justify-center text-[#00B4D8] group-hover:bg-[#00B4D8] group-hover:text-white transition-all duration-500 shadow-lg">
+                  <div className="w-14 h-14 rounded-xl bg-[#0F2942] border border-white/10 flex items-center justify-center text-[#00B4D8] group-hover:bg-[#00B4D8] group-hover:text-[#0F2942] transition-all duration-500 shadow-lg">
                     <div className="w-7 h-7">
                       {reason.icon}
                     </div>

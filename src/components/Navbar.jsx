@@ -76,6 +76,10 @@ const Navbar = () => {
               <img
                 src="/logo/logo-name.png"
                 alt="HIKOM International"
+                width="500"
+                height="74"
+                loading="eager"
+                decoding="async"
                 onError={() => setLogoError(true)}
                 className="h-11 w-auto object-contain"
               />
@@ -90,6 +94,12 @@ const Navbar = () => {
                 className="relative group"
                 onMouseEnter={() => link.dropdown && setActiveDropdown(link.name)}
                 onMouseLeave={() => link.dropdown && setActiveDropdown(null)}
+                onFocus={() => link.dropdown && setActiveDropdown(link.name)}
+                onBlur={(e) => {
+                  if (link.dropdown && !e.currentTarget.contains(e.relatedTarget)) {
+                    setActiveDropdown(null);
+                  }
+                }}
               >
                 <Link
                   to={link.href}
@@ -105,6 +115,7 @@ const Navbar = () => {
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                     </svg>
@@ -138,7 +149,7 @@ const Navbar = () => {
                               onClick={() => setActiveDropdown(null)}
                               className="flex items-center text-[#0F2942] hover:text-[#00B4D8] hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors text-sm font-medium whitespace-nowrap"
                             >
-                              <svg className="w-4 h-4 mr-2 text-[#00B4D8] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                              <svg className="w-4 h-4 mr-2 text-[#00B4D8] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                               </svg>
                               {label}
@@ -164,10 +175,13 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className="xl:hidden flex items-center">
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
               className="text-[#0F2942] hover:text-[#00B4D8] focus:outline-none"
             >
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 {mobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -192,20 +206,22 @@ const Navbar = () => {
               {navLinks.map((link) => (
                 <div key={link.name}>
                   {link.dropdown ? (
-                    <div
-                      className="flex justify-between items-center px-3 py-3 text-[#0F2942] font-semibold hover:text-[#00B4D8] hover:bg-gray-50 rounded-md cursor-pointer"
+                    <button
+                      type="button"
+                      className="w-full flex justify-between items-center px-3 py-3 text-[#0F2942] font-semibold hover:text-[#00B4D8] hover:bg-gray-50 rounded-md cursor-pointer"
                       onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
+                      aria-expanded={activeDropdown === link.name}
                     >
                       <span className="uppercase tracking-wide text-sm">{link.name}</span>
                       <svg
                         className={`w-4 h-4 transition-transform duration-200 ${
                           activeDropdown === link.name ? "rotate-180" : ""
                         }`}
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                       </svg>
-                    </div>
+                    </button>
                   ) : (
                     <Link
                       to={link.href}
